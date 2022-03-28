@@ -3,7 +3,8 @@ import { UsersService } from '../services/users.service';
 import {
   loginUserFailure,
   loginUserRequest,
-  loginUserSuccess,
+  logoutUser,
+  loginUserSuccess, logoutUserRequest,
   registerUserFailure,
   registerUserRequest,
   registerUserSuccess
@@ -47,4 +48,17 @@ export class UsersEffects {
       this.helpers.catchServerError(loginUserFailure)
     ))
   ));
+
+  logoutUser = createEffect(() => this.actions.pipe(
+    ofType(logoutUserRequest),
+    mergeMap(() => {
+      return this.usersService.logout().pipe(
+        map(() => logoutUser()),
+        tap(() => {
+          void this.router.navigate(['/']);
+          this.helpers.openSnackbar('Logout successful!');
+        })
+      )
+    })
+  ))
 }

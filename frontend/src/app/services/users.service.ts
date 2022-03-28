@@ -22,4 +22,10 @@ export class UsersService {
       console.log(user);
     }))
   }
+
+  logout() {
+    return this.http.delete(env.apiUrl + '/users/sessions').pipe(tap(user => {
+      console.log(user);
+    }));
+  }
 }

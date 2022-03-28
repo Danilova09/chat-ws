@@ -22,6 +22,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { HomeComponent } from './pages/home/home.component';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { HasRolesDirective } from './directives/has-roles.directive';
 
 @NgModule({
   declarations: [
@@ -30,6 +31,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
     RegisterComponent,
     CenteredCardComponent,
     HomeComponent,
+    HasRolesDirective,
   ],
     imports: [
         BrowserModule,

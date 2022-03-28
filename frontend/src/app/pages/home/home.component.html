@@ -1,3 +1,28 @@
-<mat-toolbar>
+<mat-toolbar fxLayout="row" fxLayoutAlign="space-between center">
   <span>My Chat</span>
+  <div>
+    <span style="padding: 20px; border-right: 2px solid black;">{{(user | async)?.displayName }}</span>
+    <button style="margin-left: 20px;" mat-raised-button color="primary"  (click)="logout()">LOG OUT
+      <mat-icon style="margin-top: -5px;">logout</mat-icon></button>
+  </div>
 </mat-toolbar>
+<div class="main-block">
+  <div style="display: flex; height: 100%;">
+    <fieldset style="width: 30%;">
+      <legend>Online</legend>
+    </fieldset>
+    <div style="display: flex; flex-direction: column; width: 70%">
+      <fieldset style="height: 80%">
+        <legend>Chat room</legend>
+      </fieldset>
+      <fieldset style="height: 20%; margin-top: 5px;">
+        <form #f="ngForm" (ngSubmit)="onSubmit()" style="display: flex; justify-content: center; align-items: baseline">
+          <mat-form-field appearance="outline" style="width: 70%; margin-top: 20px;">
+            <input type="text" name="message" #message="ngModel" ngModel required matInput>
+          </mat-form-field>
+          <button style="width: 30%; margin-left: 10px" mat-raised-button color="primary">SEND</button>
+        </form>
+      </fieldset>
+    </div>
+  </div>
+</div>
