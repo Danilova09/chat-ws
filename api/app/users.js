@@ -14,9 +14,10 @@ router.get('/', async (req, res, next) => {
     }
 });
 
-router.post('/', auth, permit('admin'), async (req, res, next) => {
+router.post('/', async (req, res, next) => {
     try {
         const userData = {
+            displayName: req.body.displayName,
             email: req.body.email,
             password: req.body.password,
         }
@@ -28,7 +29,7 @@ router.post('/', auth, permit('admin'), async (req, res, next) => {
         res.send(user);
     } catch (e) {
         if (e instanceof mongoose.Error.ValidationError) {
-            return res.set(400).send(e);
+            return res.status(400).send(e);
         }
         return next(e);
     }

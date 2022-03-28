@@ -1,0 +1,30 @@
+<app-centered-card title="Sign in">
+  <form fxLayout="column" fxLayoutAlign="center" #f="ngForm" (ngSubmit)="onSubmit()">
+    <div *ngIf="error | async" class="error">
+      wrong data!
+    </div>
+    <mat-form-field appearance="outline">
+      <mat-label>Email</mat-label>
+      <input type="text" name="email" #email="ngModel" email ngModel matInput required>
+      <mat-error *ngIf="email.touched && email.hasError('required')">
+        Email is required!
+      </mat-error>
+      <mat-error *ngIf="email.touched && email.hasError('email')">
+        Enter valid email!
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Enter your password</mat-label>
+      <input matInput [type]="hide ? 'password' : 'text'" name="password" #password="ngModel" ngModel required>
+      <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
+              [attr.aria-pressed]="hide">
+        <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+        <mat-error *ngIf="password.touched && password.hasError('required')">
+          Password is required!
+        </mat-error>
+      </button>
+    </mat-form-field>
+    <a class="register-link" routerLink="/register">Don't have account? Let's register! →</a>
+    <button mat-raised-button style="align-self: center;" color="primary">SIGN IN</button>
+  </form>
+</app-centered-card>

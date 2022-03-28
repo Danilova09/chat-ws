@@ -1,0 +1,52 @@
+<app-centered-card title="Register">
+  <form fxLayout="column" fxLayoutAlign="center" #f="ngForm" (ngSubmit)="onSubmit()">
+    <mat-form-field appearance="outline">
+      <mat-label>Name</mat-label>
+      <input type="text" name="displayName" #displayName="ngModel" ngModel required matInput>
+      <mat-error *ngIf="displayName.touched && displayName.hasError('required')">
+        Name is required!
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Email</mat-label>
+      <input type="text" name="email" #email="ngModel" email ngModel matInput required>
+      <mat-error *ngIf="email.touched && email.hasError('required')">
+        Email is required!
+      </mat-error>
+      <mat-error *ngIf="email.touched && email.hasError('email')">
+        Enter valid email!
+      </mat-error>
+      <mat-error *ngIf="email.touched && email.hasError('serverError')">
+        {{ email.getError('serverError') }}
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Enter your password</mat-label>
+      <input matInput [type]="hidePassword ? 'password' : 'text'" name="password" #password="ngModel" ngModel required>
+      <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword" [attr.aria-label]="'hidePassword password'"
+              [attr.aria-pressed]="hidePassword">
+        <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+      </button>
+      <mat-error *ngIf="password.touched && password.hasError('required')">
+        Password is required!
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Confirm password!</mat-label>
+      <input [type]="hideConfirmPassword ? 'password' : 'text'" type="password" ngValidateEqual="password" name="confirmPassword" #confirmPassword="ngModel" ngModel
+             required matInput>
+      <button mat-icon-button matSuffix (click)="hideConfirmPassword = !hideConfirmPassword" [attr.aria-label]="'hideConfirmPassword password'"
+              [attr.aria-pressed]="hideConfirmPassword">
+        <mat-icon>{{hideConfirmPassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+      </button>
+      <mat-error *ngIf="confirmPassword.touched && confirmPassword.hasError('required')">
+        Repeat password!
+      </mat-error>
+      <mat-error *ngIf="confirmPassword.touched && confirmPassword.hasError('notEqual') && !confirmPassword.hasError('required')">
+        Password doesn't match!
+      </mat-error>
+    </mat-form-field>
+    <button mat-raised-button style="align-self: center;" color="primary">REGISTER</button>
+  </form>
+</app-centered-card>
+

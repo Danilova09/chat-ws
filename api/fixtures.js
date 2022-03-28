@@ -13,11 +13,13 @@ const run = async () => {
     }
 
     await User.create({
+        displayName: 'user',
         email: 'user@shop.com',
         password: 'user',
         token: 'user',
         role: 'user'
     }, {
+        displayName: 'admin',
         email: 'admin@shop.com',
         password: 'admin',
         token: 'admin',
