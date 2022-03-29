@@ -3,13 +3,16 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const config = require('./config');
 const users = require('./app/users');
-const port = 8000;
+const messages = require('./app/messages');
 const app = express();
+const port = 8000;
 
+require('express-ws')(app);
 
 app.use(cors());
 app.use(express.json());
 app.use('/users', users);
+app.use('/messages', messages);
 
 
 const run = async () => {

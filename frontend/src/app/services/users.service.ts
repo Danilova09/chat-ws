@@ -18,9 +18,7 @@ export class UsersService {
   }
 
   login(loginUserData: LoginUserData) {
-    return this.http.post<User>(env.apiUrl + '/users/sessions', loginUserData).pipe(tap(user => {
-      console.log(user);
-    }))
+    return this.http.post<User>(env.apiUrl + '/users/sessions', loginUserData);
   }
 
   logout() {

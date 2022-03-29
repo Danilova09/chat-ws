@@ -1,6 +1,6 @@
 module.exports = {
     mongo: {
-        db: 'mongodb://localhost/shop13',
+        db: 'mongodb://localhost/chat',
         options: {useNewUrlParser: true},
     }
 }

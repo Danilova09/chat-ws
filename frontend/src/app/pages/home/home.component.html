@@ -10,10 +10,16 @@
   <div style="display: flex; height: 100%;">
     <fieldset style="width: 30%;">
       <legend>Online</legend>
+      <div *ngFor="let user of activeUsers">
+        <b>{{ user.user.displayName }}</b>
+      </div>
     </fieldset>
     <div style="display: flex; flex-direction: column; width: 70%">
       <fieldset style="height: 80%">
         <legend>Chat room</legend>
+        <div *ngFor="let message of messages">
+          <b>{{ message.username }}</b>: {{ message.text }}
+        </div>
       </fieldset>
       <fieldset style="height: 20%; margin-top: 5px;">
         <form #f="ngForm" (ngSubmit)="onSubmit()" style="display: flex; justify-content: center; align-items: baseline">

@@ -40,7 +40,7 @@ export class AuthInterceptor implements HttpInterceptor {
 
         if (error.status === 401) {
           this.store.dispatch(logoutUser());
-          void this.router.navigate(['/login']);
+          void this.router.navigate(['/']);
         }
 
         return throwError(() => error);
