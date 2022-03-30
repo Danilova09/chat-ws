@@ -5,25 +5,8 @@ import { logoutUserRequest } from '../../store/users.actions';
 import { Observable } from 'rxjs';
 import { User } from '../../models/user.model';
 import { NgForm } from '@angular/forms';
+import { ActiveUser, Message, ServerMessage } from '../../models/websocket.model';
 
-
-interface ActiveUser {
-  token: string,
-  user: User,
-}
-
-interface Message {
-  username: string,
-  text: string,
-}
-
-interface ServerMessage {
-  type: string,
-  messages: Message[];
-  activeConnections: any,
-  activeUsers: ActiveUser[],
-  message: Message,
-}
 
 @Component({
   selector: 'app-home',
@@ -32,12 +15,11 @@ interface ServerMessage {
 })
 export class HomeComponent implements OnInit, OnDestroy {
   @ViewChild('f') form!: NgForm;
-  username!: undefined | string;
   token!: undefined | string;
   user!: Observable<null | User>;
-  ws!: WebSocket;
   messages: Message[] = [];
   activeUsers: ActiveUser[] = [];
+  ws!: WebSocket;
 
   constructor(
     private store: Store<AppState>
@@ -45,7 +27,6 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.user = store.select(state => state.users.user);
     this.user.subscribe(user => {
       this.token = user?.token;
-      this.username = user?.displayName;
     });
   }
 
@@ -58,28 +39,24 @@ export class HomeComponent implements OnInit, OnDestroy {
         type: 'LOGIN',
         token: this.token,
       }));
-    }
+    };
 
     this.ws.onmessage = (event) => {
       const decodedMessage: ServerMessage = JSON.parse(event.data);
 
-      if (decodedMessage.type === 'NEW_USER') {
+      if (decodedMessage.type === 'PREV_CHAT_DATA') {
+        this.messages = decodedMessage.messages;
         this.activeUsers = decodedMessage.activeUsers;
       }
 
-      if (decodedMessage.type === 'PREV_MESSAGES') {
-        this.messages = decodedMessage.messages;
+      if (decodedMessage.type === 'ACTIVE_USERS_CHANGED') {
+        this.activeUsers = decodedMessage.activeUsers;
       }
-
 
       if (decodedMessage.type === 'NEW_MESSAGE') {
         this.messages.push(decodedMessage.message);
       }
-    }
-  }
-
-  logout() {
-    this.store.dispatch(logoutUserRequest());
+    };
   }
 
   onSubmit() {
@@ -87,11 +64,14 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.ws.send(JSON.stringify({
         type: 'SEND_MESSAGE',
         message: {
-          username: this.username,
           text: this.form.controls['message'].value,
         }
       }));
     }
+  }
+
+  logout() {
+    this.store.dispatch(logoutUserRequest());
   }
 
   ngOnDestroy(): void {

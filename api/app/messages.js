@@ -1,59 +1,57 @@
 const express = require('express');
-const {nanoid} = require('nanoid');
 const User = require("../models/User");
+const Message = require('../models/Message');
+const {nanoid} = require('nanoid');
 const router = express.Router();
 
 require('express-ws')(router);
 
 const activeConnections = {};
 const activeUsers = [];
-const savedMessages = [];
 
 
 router.ws('/', (ws, req) => {
-    const id = nanoid();
-    activeConnections[id] = ws;
-
-    let username = '';
-    let usersToken = '';
-
-    ws.send(JSON.stringify({
-        type: 'PREV_MESSAGES',
-        messages: savedMessages,
-        activeUsers: activeUsers,
-    }))
+    const id = nanoid()
+    let usersId = '';
 
     ws.on('message', async (msg) => {
         const decodedMessage = JSON.parse(msg);
+
+        const savedMessages = await Message.find().populate('author');
+
+        ws.send(JSON.stringify({
+            type: 'PREV_CHAT_DATA',
+            messages: savedMessages,
+            activeUsers: activeUsers,
+        }));
+
         switch (decodedMessage.type) {
             case 'LOGIN':
-                usersToken = decodedMessage.token;
                 const user = await User.findOne({token: decodedMessage.token});
-                username = user.displayName;
+                usersId = user._id;
+                activeConnections[id] = ws;
 
-                activeConnections[id].user = user;
-                activeUsers.push({token: decodedMessage.token, user: user})
-                Object.keys(activeConnections).forEach(id => {
-                    const conn = activeConnections[id];
-                    conn.send(JSON.stringify({
-                            type: 'NEW_USER',
-                            activeUsers: activeUsers,
-                        }
-                    ))
-                })
+                const isOnline = activeUsers.find(item => item.user._id.toString() === usersId.toString());
+
+                if (!isOnline) {
+                    activeUsers.push({id: id, user: user})
+                    dataChanged('ACTIVE_USERS_CHANGED', 'activeUsers', activeUsers);
+                }
+
                 break;
             case 'SEND_MESSAGE':
-                savedMessages.push(decodedMessage.message);
-                Object.keys(activeConnections).forEach(id => {
-                    const conn = activeConnections[id];
-                    conn.send(JSON.stringify({
-                        type: 'NEW_MESSAGE',
-                        message: {
-                            username,
-                            text: decodedMessage.message.text,
-                        }
-                    }))
-                })
+                const author = await User.findOne({_id: usersId});
+
+                const messageData = {
+                    text: decodedMessage.message.text,
+                    author,
+                }
+
+                const message = new Message(messageData);
+                await message.save();
+
+                dataChanged('NEW_MESSAGE', 'message', message);
+
                 break;
             default:
                 console.log('Unknown type:', decodedMessage.type);
@@ -61,24 +59,26 @@ router.ws('/', (ws, req) => {
     });
 
     ws.on('close', () => {
-        activeUsers.find((item) => {
-            if (item.token === usersToken) {
+        delete activeConnections[id];
+
+        activeUsers.forEach((item) => {
+            if (item.id === id) {
                 let index = activeUsers.indexOf(item);
                 activeUsers.splice(index, 1);
             }
         });
-
-        Object.keys(activeConnections).forEach(id => {
-            const conn = activeConnections[id];
-            conn.send(JSON.stringify({
-                    type: 'NEW_USER',
-                    activeUsers: activeUsers,
-                }
-            ))
-        })
-
-        delete activeConnections[id];
+        dataChanged('ACTIVE_USERS_CHANGED', 'activeUsers', activeUsers);
     })
 });
+
+const dataChanged = (type, changedDataNameAsAString, dataValue) => {
+    Object.keys(activeConnections).forEach(id => {
+        const conn = activeConnections[id];
+        conn.send(JSON.stringify({
+            type: type,
+            [changedDataNameAsAString]: dataValue,
+        }))
+    })
+}
 
 module.exports = router;
