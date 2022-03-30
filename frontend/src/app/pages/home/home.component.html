@@ -19,7 +19,7 @@
       <fieldset style="height: 80%; overflow: scroll; scroll-snap-type: y proximity;">
         <legend>Chat room</legend>
         <div *ngFor="let message of messages.slice(30); let i = index;">
-          <b>{{i}}.{{ message.author.displayName }}</b>: {{ message.text }}
+          <b>{{ message.author.displayName }}</b>: {{ message.text }}
         </div>
       </fieldset>
       <fieldset style="height: 20%; margin-top: 5px;">

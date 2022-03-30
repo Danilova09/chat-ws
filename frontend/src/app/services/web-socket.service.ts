@@ -15,22 +15,19 @@ export class WebSocketService {
   ws!: WebSocket;
 
   openWebSocket(usersToken: undefined | string) {
-    this.ws = new WebSocket(env.webSocketApiUrl);
-    this.ws.onopen = (event) => {
-      this.ws.send(JSON.stringify({
-        type: 'LOGIN',
-        token: usersToken,
-      }));
-    };
-
-    this.ws.onclose = (event) => {
-      setTimeout(() => {
+      this.ws = new WebSocket(env.webSocketApiUrl);
+      this.ws.onopen = (event) => {
         this.ws.send(JSON.stringify({
           type: 'LOGIN',
           token: usersToken,
         }));
-      }, 3000);
-    };
+      };
+
+    // this.ws.onclose = (event) => {
+    //   setTimeout(() => {
+    //     this.ws = new WebSocket(env.webSocketApiUrl);
+    //   }, 3000);
+    // };
 
     this.ws.onmessage = (event) => {
       const decodedMessage = JSON.parse(event.data);

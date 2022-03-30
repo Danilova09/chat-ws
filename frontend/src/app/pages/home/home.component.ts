@@ -35,10 +35,10 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.webSocketService.openWebSocket(this.token);
-    this.webSocketService.messagesChange.subscribe((messages: Message[]) => {
+    this.messagesSub = this.webSocketService.messagesChange.subscribe((messages: Message[]) => {
       this.messages = messages;
     });
-    this.webSocketService.activeUsersChange.subscribe((users: ActiveUser[]) => {
+    this.activeUsersSub = this.webSocketService.activeUsersChange.subscribe((users: ActiveUser[]) => {
       this.activeUsers = users;
     });
   }
