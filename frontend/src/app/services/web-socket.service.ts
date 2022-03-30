@@ -23,11 +23,11 @@ export class WebSocketService {
         }));
       };
 
-    // this.ws.onclose = (event) => {
-    //   setTimeout(() => {
-    //     this.ws = new WebSocket(env.webSocketApiUrl);
-    //   }, 3000);
-    // };
+    this.ws.onclose = (event) => {
+      setTimeout(() => {
+        this.ws = new WebSocket(env.webSocketApiUrl);
+      }, 3000);
+    };
 
     this.ws.onmessage = (event) => {
       const decodedMessage = JSON.parse(event.data);
