@@ -18,7 +18,7 @@
     <div style="display: flex; flex-direction: column; width: 70%">
       <fieldset style="height: 80%; overflow: scroll; scroll-snap-type: y proximity;">
         <legend>Chat room</legend>
-        <div *ngFor="let message of messages.slice(30); let i = index;">
+        <div *ngFor="let message of messages; let i = index;">
           <b>{{ message.author.displayName }}</b>: {{ message.text }}
         </div>
       </fieldset>
