@@ -4,8 +4,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { StoreModule } from '@ngrx/store';
-import { EffectsModule } from '@ngrx/effects';
 import { LoginComponent } from './pages/login/login.component';
 import { RegisterComponent } from './pages/register/register.component';
 import { CenteredCardComponent } from './ui/centered-card/centered-card.component';
@@ -56,5 +54,4 @@ import { AuthInterceptor } from './auth.interceptor';
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule {
-}
+export class AppModule {}

@@ -3,13 +3,14 @@ import { UsersService } from '../services/users.service';
 import {
   loginUserFailure,
   loginUserRequest,
+  loginUserSuccess,
   logoutUser,
-  loginUserSuccess, logoutUserRequest,
+  logoutUserRequest,
   registerUserFailure,
   registerUserRequest,
   registerUserSuccess
 } from './users.actions';
-import { catchError, map, mergeMap, tap } from 'rxjs';
+import { map, mergeMap, tap } from 'rxjs';
 import { Router } from '@angular/router';
 import { HelpersService } from '../services/helpers.service';
 import { Injectable } from '@angular/core';
@@ -21,8 +22,7 @@ export class UsersEffects {
     private usersService: UsersService,
     private router: Router,
     private helpers: HelpersService,
-  ) {
-  }
+  ) {}
 
 
   registerUser = createEffect(() => this.actions.pipe(
@@ -58,7 +58,7 @@ export class UsersEffects {
           void this.router.navigate(['/']);
           this.helpers.openSnackbar('Logout successful!');
         })
-      )
+      );
     })
-  ))
+  ));
 }

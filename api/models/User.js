@@ -38,13 +38,12 @@ const UserSchema = new Schema({
     }
 })
 
-// UserSchema.set('toJSON', {
-//     transform: (doc, ret, options) => {
-//         delete ret.password;
-//         delete ret.token;
-//         return ret;
-//     }
-// });
+UserSchema.set('toJSON', {
+    transform: (doc, ret, options) => {
+        delete ret.password;
+        return ret;
+    }
+});
 
 const SALT_WORK_FACTOR = 10;
 

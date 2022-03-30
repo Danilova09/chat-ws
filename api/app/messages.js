@@ -3,7 +3,6 @@ const User = require("../models/User");
 const Message = require('../models/Message');
 const {nanoid} = require('nanoid');
 const router = express.Router();
-
 require('express-ws')(router);
 
 const activeConnections = {};
@@ -16,8 +15,7 @@ router.ws('/', (ws, req) => {
 
     ws.on('message', async (msg) => {
         const decodedMessage = JSON.parse(msg);
-
-        const savedMessages = await Message.find().populate('author');
+        const savedMessages = await Message.find().sort({date: -1}).populate('author');
 
         ws.send(JSON.stringify({
             type: 'PREV_CHAT_DATA',

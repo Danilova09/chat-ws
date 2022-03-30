@@ -28,5 +28,4 @@ const effects = [UsersEffects];
   ],
   exports: [StoreModule, EffectsModule]
 })
-export class AppStoreModule {
-}
+export class AppStoreModule {}

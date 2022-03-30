@@ -12,7 +12,7 @@ export interface RegisterError {
   errors: {
     password: FieldError,
     email: FieldError,
-  }
+  };
 }
 
 export interface LoginUserData {

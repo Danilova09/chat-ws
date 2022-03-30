@@ -23,7 +23,8 @@
     <mat-form-field appearance="outline">
       <mat-label>Enter your password</mat-label>
       <input matInput [type]="hidePassword ? 'password' : 'text'" name="password" #password="ngModel" ngModel required>
-      <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword" [attr.aria-label]="'hidePassword password'"
+      <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword"
+              [attr.aria-label]="'hidePassword password'"
               [attr.aria-pressed]="hidePassword">
         <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
       </button>
@@ -33,16 +34,19 @@
     </mat-form-field>
     <mat-form-field appearance="outline">
       <mat-label>Confirm password!</mat-label>
-      <input [type]="hideConfirmPassword ? 'password' : 'text'" type="password" ngValidateEqual="password" name="confirmPassword" #confirmPassword="ngModel" ngModel
+      <input [type]="hideConfirmPassword ? 'password' : 'text'" type="password" ngValidateEqual="password"
+             name="confirmPassword" #confirmPassword="ngModel" ngModel
              required matInput>
-      <button mat-icon-button matSuffix (click)="hideConfirmPassword = !hideConfirmPassword" [attr.aria-label]="'hideConfirmPassword password'"
+      <button mat-icon-button matSuffix (click)="hideConfirmPassword = !hideConfirmPassword"
+              [attr.aria-label]="'hideConfirmPassword password'"
               [attr.aria-pressed]="hideConfirmPassword">
         <mat-icon>{{hideConfirmPassword ? 'visibility_off' : 'visibility'}}</mat-icon>
       </button>
       <mat-error *ngIf="confirmPassword.touched && confirmPassword.hasError('required')">
         Repeat password!
       </mat-error>
-      <mat-error *ngIf="confirmPassword.touched && confirmPassword.hasError('notEqual') && !confirmPassword.hasError('required')">
+      <mat-error
+        *ngIf="confirmPassword.touched && confirmPassword.hasError('notEqual') && !confirmPassword.hasError('required')">
         Password doesn't match!
       </mat-error>
     </mat-form-field>

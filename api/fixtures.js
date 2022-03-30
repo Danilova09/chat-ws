@@ -2,7 +2,6 @@ const mongoose = require('mongoose');
 const config = require('./config');
 const User = require('./models/User');
 
-
 const run = async () => {
     await mongoose.connect(config.mongo.db, config.mongo.options);
 

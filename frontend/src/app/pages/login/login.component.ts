@@ -1,6 +1,5 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { UsersService } from '../../services/users.service';
 import { Store } from '@ngrx/store';
 import { AppState } from '../../store/types';
 import { loginUserRequest } from '../../store/users.actions';
@@ -12,7 +11,7 @@ import { LoginError } from '../../models/user.model';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.sass']
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent {
   @ViewChild('f') form!: NgForm;
   hide: boolean = true;
   loading!: Observable<boolean>;
@@ -23,9 +22,6 @@ export class LoginComponent implements OnInit {
   ) {
     this.loading = store.select(state => state.users.loginLoading);
     this.error = store.select(state => state.users.loginError);
-  }
-
-  ngOnInit(): void {
   }
 
   onSubmit() {

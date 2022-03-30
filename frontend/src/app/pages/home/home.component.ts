@@ -2,10 +2,11 @@ import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { AppState } from '../../store/types';
 import { logoutUserRequest } from '../../store/users.actions';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { User } from '../../models/user.model';
 import { NgForm } from '@angular/forms';
-import { ActiveUser, Message, ServerMessage } from '../../models/websocket.model';
+import { ActiveUser, Message } from '../../models/websocket.model';
+import { WebSocketService } from '../../services/web-socket.service';
 
 
 @Component({
@@ -19,10 +20,12 @@ export class HomeComponent implements OnInit, OnDestroy {
   user!: Observable<null | User>;
   messages: Message[] = [];
   activeUsers: ActiveUser[] = [];
-  ws!: WebSocket;
+  messagesSub!: Subscription;
+  activeUsersSub!: Subscription;
 
   constructor(
-    private store: Store<AppState>
+    private store: Store<AppState>,
+    private webSocketService: WebSocketService,
   ) {
     this.user = store.select(state => state.users.user);
     this.user.subscribe(user => {
@@ -31,42 +34,19 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.ws = new WebSocket('ws://localhost:8000/messages');
-    this.ws.onclose = () => console.log('ws closed');
-
-    this.ws.onopen = event => {
-      this.ws.send(JSON.stringify({
-        type: 'LOGIN',
-        token: this.token,
-      }));
-    };
-
-    this.ws.onmessage = (event) => {
-      const decodedMessage: ServerMessage = JSON.parse(event.data);
-
-      if (decodedMessage.type === 'PREV_CHAT_DATA') {
-        this.messages = decodedMessage.messages;
-        this.activeUsers = decodedMessage.activeUsers;
-      }
-
-      if (decodedMessage.type === 'ACTIVE_USERS_CHANGED') {
-        this.activeUsers = decodedMessage.activeUsers;
-      }
-
-      if (decodedMessage.type === 'NEW_MESSAGE') {
-        this.messages.push(decodedMessage.message);
-      }
-    };
+    this.webSocketService.openWebSocket(this.token);
+    this.webSocketService.messagesChange.subscribe((messages: Message[]) => {
+      this.messages = messages;
+    });
+    this.webSocketService.activeUsersChange.subscribe((users: ActiveUser[]) => {
+      this.activeUsers = users;
+    });
   }
 
   onSubmit() {
     if (this.form.valid) {
-      this.ws.send(JSON.stringify({
-        type: 'SEND_MESSAGE',
-        message: {
-          text: this.form.controls['message'].value,
-        }
-      }));
+      const text = this.form.controls['message'].value;
+      this.webSocketService.sendMessage(text);
     }
   }
 
@@ -75,6 +55,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.ws.close();
+    this.webSocketService.closeWebSocket();
+    this.messagesSub.unsubscribe();
+    this.activeUsersSub.unsubscribe();
   }
 }

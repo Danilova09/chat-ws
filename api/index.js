@@ -19,7 +19,7 @@ const run = async () => {
     await mongoose.connect(config.mongo.db, config.mongo.options);
 
     app.listen(port, () => {
-        console.log('Server is listening port ' , port, '...');
+        console.log('Server is listening port ', port, '...');
     });
 
     process.on('exit', () => {
@@ -27,4 +27,4 @@ const run = async () => {
     })
 }
 
- run().catch((e) => console.log(e));
+run().catch((e) => console.log(e));

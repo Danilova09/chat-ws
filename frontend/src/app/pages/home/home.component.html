@@ -2,23 +2,24 @@
   <span>My Chat</span>
   <div>
     <span style="padding: 20px; border-right: 2px solid black;">{{(user | async)?.displayName }}</span>
-    <button style="margin-left: 20px;" mat-raised-button color="primary"  (click)="logout()">LOG OUT
-      <mat-icon style="margin-top: -5px;">logout</mat-icon></button>
+    <button style="margin-left: 20px;" mat-raised-button color="primary" (click)="logout()">LOG OUT
+      <mat-icon style="margin-top: -5px;">logout</mat-icon>
+    </button>
   </div>
 </mat-toolbar>
 <div class="main-block">
   <div style="display: flex; height: 100%;">
     <fieldset style="width: 30%;">
       <legend>Online</legend>
-      <div *ngFor="let user of activeUsers">
+      <div *ngFor="let user of activeUsers;">
         <b>{{ user.user?.displayName }}</b>
       </div>
     </fieldset>
     <div style="display: flex; flex-direction: column; width: 70%">
-      <fieldset style="height: 80%">
+      <fieldset style="height: 80%; overflow: scroll; scroll-snap-type: y proximity;">
         <legend>Chat room</legend>
-        <div *ngFor="let message of messages">
-          <b>{{ message.author.displayName }}</b>: {{ message.text }}
+        <div *ngFor="let message of messages.slice(30); let i = index;">
+          <b>{{i}}.{{ message.author.displayName }}</b>: {{ message.text }}
         </div>
       </fieldset>
       <fieldset style="height: 20%; margin-top: 5px;">
